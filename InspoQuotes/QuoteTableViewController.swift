@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import StoreKit
 
-class QuoteTableViewController: UITableViewController {
+class QuoteTableViewController: UITableViewController, SKPaymentTransactionObserver {
     
     var quotesToShow = [
         "Our greatest glory is not in never falling, but in rising every time we fall. — Confucius",
@@ -30,6 +31,8 @@ class QuoteTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        SKPaymentQueue.default().add(self)
     }
 
     // MARK: - Table view data source
@@ -53,6 +56,34 @@ class QuoteTableViewController: UITableViewController {
         
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == quotesToShow.count {
+            print("Selected Pay")
+            buyPremiumQoutes()
+        } else {
+            print("Selected Qoute")
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    // MARK: - Payment Processing
+    
+    func buyPremiumQoutes() {
+        if SKPaymentQueue.canMakePayments() {
+            print("Prepare to Pay")
+            let paymentRequest = SKMutablePayment()
+            paymentRequest.productIdentifier = "info.starupbuilder.InspoQoute.PremiumQoutes" //set this up in apple connect
+            SKPaymentQueue.default().add(paymentRequest)
+        } else {
+            print("Cant make a payment")
+        }
+    }
+    
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        
     }
     
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {

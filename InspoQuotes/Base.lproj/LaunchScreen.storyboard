@@ -16,8 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="InspoQoutes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xac-cM-h7V">
-                                <rect key="frame" x="20" y="419" width="374" height="58"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="InspoQoutes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xac-cM-h7V">
+                                <rect key="frame" x="20" y="424" width="374" height="58"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="Spz-jI-q3U"/>
                                 </constraints>
@@ -30,7 +30,6 @@
                         <constraints>
                             <constraint firstItem="xac-cM-h7V" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="AS0-Dy-S8m"/>
                             <constraint firstItem="xac-cM-h7V" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="Ia3-79-B2o"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xac-cM-h7V" secondAttribute="trailing" constant="20" id="ia3-3W-hrY"/>
                             <constraint firstItem="xac-cM-h7V" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vrq-wL-1z4"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
