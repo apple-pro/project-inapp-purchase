@@ -11,7 +11,9 @@ import StoreKit
 
 class QuoteTableViewController: UITableViewController, SKPaymentTransactionObserver {
     
-    var quotesToShow = [
+    @IBOutlet weak var restoreButton: UIBarButtonItem!
+    
+    let freeQoutes = [
         "Our greatest glory is not in never falling, but in rising every time we fall. — Confucius",
         "All our dreams can come true, if we have the courage to pursue them. – Walt Disney",
         "It does not matter how slowly you go as long as you do not stop. – Confucius",
@@ -34,19 +36,24 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         
         SKPaymentQueue.default().add(self)
     }
+    
+    func qoutesToShow() -> [String] {
+        freeQoutes + (hasPremiumQoutes() ? premiumQuotes : [])
+    }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return quotesToShow.count + 1
+        return qoutesToShow().count + (hasPremiumQoutes() ? 0 : 1)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "QuoteCell", for: indexPath)
-
-        if indexPath.row < quotesToShow.count {
-            cell.textLabel?.numberOfLines = 0
-            cell.textLabel?.text = quotesToShow[indexPath.row]
+        cell.textLabel?.numberOfLines = 0
+        
+        if indexPath.row < qoutesToShow().count {
+            cell.textLabel?.text = qoutesToShow()[indexPath.row]
+            cell.textLabel?.textColor = UIColor(named: "label")
             cell.accessoryType = .none
         } else {
             cell.textLabel?.text = "Get More Qoutes"
@@ -54,12 +61,11 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
             cell.accessoryType = .disclosureIndicator
         }
         
-        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == quotesToShow.count {
+        if indexPath.row >= qoutesToShow().count {
             print("Selected Pay")
             buyPremiumQoutes()
         } else {
@@ -84,11 +90,38 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
+        for txn in transactions {
+            if txn.transactionState == .purchased {
+                addPremium()
+            } else {
+                let alert = UIAlertController(title: "Error", message: "Payment Processing Failed", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true)
+            }
+        }
     }
     
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {
-        
+        //fake: just to simulate a successful payment
+        if hasPremiumQoutes() {
+            removePremium()
+        } else {
+            addPremium()
+        }
     }
 
+    func hasPremiumQoutes() -> Bool {
+        UserDefaults.standard.bool(forKey: "isPremium")
+    }
+    
+    func removePremium() {
+        UserDefaults.standard.set(false, forKey: "isPremium")
+        tableView.reloadData()
+    }
+    
+    func addPremium() {
+        UserDefaults.standard.set(true, forKey: "isPremium")
+        tableView.reloadData()
+    }
 
 }
