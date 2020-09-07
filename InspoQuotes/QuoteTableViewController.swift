@@ -93,10 +93,13 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
         for txn in transactions {
-            if txn.transactionState == .purchased || txn.transactionState == .restored {
+            if txn.transactionState == .purchased {
+                addPremium()
+            } else if txn.transactionState == .purchased || txn.transactionState == .restored {
                 //also check if the transaction is of the right product id
                 //https://developer.apple.com/documentation/storekit/in-app_purchase/unlocking_purchased_content
                 addPremium()
+                SKPaymentQueue.default().finishTransaction(txn)
             } else {
                 let alert = UIAlertController(title: "Error", message: "Payment Processing Failed", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -140,6 +143,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     func addPremium() {
         UserDefaults.standard.set(true, forKey: K.Premium)
         tableView.reloadData()
+        navigationItem.setRightBarButton(nil, animated: true)
     }
     
     
