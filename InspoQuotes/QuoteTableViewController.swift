@@ -93,7 +93,9 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
         for txn in transactions {
-            if txn.transactionState == .purchased {
+            if txn.transactionState == .purchased || txn.transactionState == .restored {
+                //also check if the transaction is of the right product id
+                //https://developer.apple.com/documentation/storekit/in-app_purchase/unlocking_purchased_content
                 addPremium()
             } else {
                 let alert = UIAlertController(title: "Error", message: "Payment Processing Failed", preferredStyle: .alert)
@@ -108,7 +110,10 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         if hasPremiumQoutes() {
             removePremium()
         } else {
-            addPremium()
+            //this will retrigger the paymentQueue(updatedTransactions) method
+            //as if your are done making the purchase
+            //so no code duplication. Hooray!!!
+            SKPaymentQueue.default().restoreCompletedTransactions()
         }
     }
 
