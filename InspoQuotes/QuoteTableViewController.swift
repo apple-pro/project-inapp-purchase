@@ -32,22 +32,25 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     ]
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         SKPaymentQueue.default().add(self)
     }
     
-    func qoutesToShow() -> [String] {
-        freeQoutes + (hasPremiumQoutes() ? premiumQuotes : [])
-    }
-
-    // MARK: - Table view data source
+    // MARK: - TableView DataSource
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return qoutesToShow().count + (hasPremiumQoutes() ? 0 : 1)
+        
+        if hasPremiumQoutes() {
+            return qoutesToShow().count
+        }
+        
+        return qoutesToShow().count + 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "QuoteCell", for: indexPath)
         cell.textLabel?.numberOfLines = 0
         
@@ -79,7 +82,6 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     
     func buyPremiumQoutes() {
         if SKPaymentQueue.canMakePayments() {
-            print("Prepare to Pay")
             let paymentRequest = SKMutablePayment()
             paymentRequest.productIdentifier = "info.starupbuilder.InspoQoute.PremiumQoutes" //set this up in apple connect
             SKPaymentQueue.default().add(paymentRequest)
@@ -110,18 +112,30 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         }
     }
 
+    // MARK: - Support
+    
+    func qoutesToShow() -> [String] {
+        
+        if hasPremiumQoutes() {
+            return freeQoutes + premiumQuotes
+        }
+        
+        return freeQoutes
+    }
+    
     func hasPremiumQoutes() -> Bool {
-        UserDefaults.standard.bool(forKey: "isPremium")
+        UserDefaults.standard.bool(forKey: K.Premium)
     }
     
     func removePremium() {
-        UserDefaults.standard.set(false, forKey: "isPremium")
+        UserDefaults.standard.set(false, forKey: K.Premium)
         tableView.reloadData()
     }
     
     func addPremium() {
-        UserDefaults.standard.set(true, forKey: "isPremium")
+        UserDefaults.standard.set(true, forKey: K.Premium)
         tableView.reloadData()
     }
-
+    
+    
 }
